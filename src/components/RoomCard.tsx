@@ -1,6 +1,7 @@
 "use client";
 
 import { Room, formatPrice } from "@/data/rooms";
+import { saveBooking } from "@/lib/storage";
 
 interface RoomCardProps {
   room: Room;
@@ -118,6 +119,20 @@ export default function RoomCard({ room }: RoomCardProps) {
 👥 Tamu: ${guests} orang
 
 💰 Total: ${formatPrice(room.price * nights)}`;
+
+              saveBooking({
+                id: `booking-${Date.now()}`,
+                nama: name,
+                wa: phone,
+                kamar: room.name,
+                kamarId: room.id,
+                checkIn,
+                checkOut,
+                tamu: parseInt(guests),
+                status: "pending",
+                createdAt: new Date().toISOString().split("T")[0],
+                totalHarga: room.price * nights,
+              });
 
               const waUrl = `https://wa.me/62816781261273?text=${encodeURIComponent(message)}`;
               window.open(waUrl, "_blank");

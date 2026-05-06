@@ -20,8 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("admin_logged_in");
-    router.push("/admin");
+    router.push("/");
   };
 
   if (!mounted) return null;

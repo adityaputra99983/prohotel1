@@ -1,22 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getStoredBookings, saveBooking, updateBookingStatus, deleteBooking, Booking } from "@/lib/storage";
 
-const allBookings = [
-  { id: "1", nama: "Budi Santoso", wa: "6281234567890", kamar: "Deluxe Room", checkIn: "2026-04-25", checkOut: "2026-04-27", tamu: 2, status: "pending", createdAt: "2026-04-23" },
-  { id: "2", nama: "Siti Rahayu", wa: "6289876543210", kamar: "Suite Room", checkIn: "2026-04-28", checkOut: "2026-04-30", tamu: 2, status: "pending", createdAt: "2026-04-23" },
-  { id: "3", nama: "Ahmad Wijaya", wa: "6285555555555", kamar: "Premium Room", checkIn: "2026-04-20", checkOut: "2026-04-22", tamu: 3, status: "approved", createdAt: "2026-04-18" },
-  { id: "4", nama: "Diana Lestari", wa: "6287777777777", kamar: "Deluxe Room", checkIn: "2026-04-15", checkOut: "2026-04-17", tamu: 2, status: "rejected", createdAt: "2026-04-14" },
+const defaultBookings: Booking[] = [
+  { id: "1", nama: "Budi Santoso", wa: "6281234567890", kamar: "Deluxe Room", kamarId: "deluxe", checkIn: "2026-04-25", checkOut: "2026-04-27", tamu: 2, status: "pending", createdAt: "2026-04-23", totalHarga: 1200000 },
+  { id: "2", nama: "Siti Rahayu", wa: "6289876543210", kamar: "Suite Room", kamarId: "suite", checkIn: "2026-04-28", checkOut: "2026-04-30", tamu: 2, status: "pending", createdAt: "2026-04-23", totalHarga: 1800000 },
+  { id: "3", nama: "Ahmad Wijaya", wa: "6285555555555", kamar: "Premium Room", kamarId: "premium", checkIn: "2026-04-20", checkOut: "2026-04-22", tamu: 3, status: "approved", createdAt: "2026-04-18", totalHarga: 1500000 },
+  { id: "4", nama: "Diana Lestari", wa: "6287777777777", kamar: "Deluxe Room", kamarId: "deluxe", checkIn: "2026-04-15", checkOut: "2026-04-17", tamu: 2, status: "rejected", createdAt: "2026-04-14", totalHarga: 1200000 },
 ];
 
 export default function AdminBookings() {
-  const [bookings, setBookings] = useState(allBookings);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const stored = getStoredBookings();
+    if (stored.length > 0) {
+      setBookings(stored);
+    } else {
+      defaultBookings.forEach(b => saveBooking(b));
+      setBookings(defaultBookings);
+    }
+    setMounted(true);
+  }, []);
 
   const filteredBookings = bookings.filter((b) => filter === "all" || b.status === filter);
 
-  const updateStatus = (id: string, status: "approved" | "rejected") => {
+  const handleUpdateStatus = (id: string, status: "approved" | "rejected") => {
+    updateBookingStatus(id, status);
     setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+  };
+
+  const handleDelete = (id: string) => {
+    deleteBooking(id);
+    setBookings((prev) => prev.filter((b) => b.id !== id));
   };
 
   const getStatusStyle = (status: string) => {
@@ -27,6 +46,8 @@ export default function AdminBookings() {
       default: return { bg: "#f3f4f6", color: "#374151" };
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <div>
@@ -98,13 +119,13 @@ export default function AdminBookings() {
                       {booking.status === "pending" && (
                         <div style={{ display: "flex", gap: "8px" }}>
                           <button
-                            onClick={() => updateStatus(booking.id, "approved")}
+                            onClick={() => handleUpdateStatus(booking.id, "approved")}
                             style={{ padding: "6px 12px", background: "#22c55e", color: "white", borderRadius: "8px", border: "none", cursor: "pointer" }}
                           >
                             ✓
                           </button>
                           <button
-                            onClick={() => updateStatus(booking.id, "rejected")}
+                            onClick={() => handleUpdateStatus(booking.id, "rejected")}
                             style={{ padding: "6px 12px", background: "#ef4444", color: "white", borderRadius: "8px", border: "none", cursor: "pointer" }}
                           >
                             ✗

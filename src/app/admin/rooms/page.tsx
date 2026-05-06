@@ -1,12 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { rooms as initialRooms, Room, formatPrice } from "@/data/rooms";
+import { getStoredRooms, saveStoredRooms } from "@/lib/storage";
 
 export default function AdminRooms() {
   const [rooms, setRooms] = useState<Room[]>(initialRooms);
+  const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+
+  useEffect(() => {
+    const stored = getStoredRooms();
+    if (stored) {
+      setRooms(stored);
+    } else {
+      saveStoredRooms(initialRooms);
+    }
+    setMounted(true);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,20 +65,27 @@ export default function AdminRooms() {
       image: formData.image || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
     };
 
+    let updatedRooms: Room[];
     if (editingRoom) {
-      setRooms((prev) => prev.map((r) => (r.id === editingRoom.id ? roomData : r)));
+      updatedRooms = rooms.map((r) => (r.id === editingRoom.id ? roomData : r));
     } else {
-      setRooms((prev) => [...prev, roomData]);
+      updatedRooms = [...rooms, roomData];
     }
-
+    
+    setRooms(updatedRooms);
+    saveStoredRooms(updatedRooms);
     closeModal();
   };
 
   const deleteRoom = (id: string) => {
     if (confirm("Yakin ingin menghapus kamar ini?")) {
-      setRooms((prev) => prev.filter((r) => r.id !== id));
+      const updated = rooms.filter((r) => r.id !== id);
+      setRooms(updated);
+      saveStoredRooms(updated);
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <div>

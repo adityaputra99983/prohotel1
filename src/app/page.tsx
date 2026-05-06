@@ -1,10 +1,26 @@
-import { rooms } from "@/data/rooms";
+"use client";
+
+import { useState, useEffect } from "react";
+import { rooms as initialRooms, Room } from "@/data/rooms";
+import { getStoredRooms } from "@/lib/storage";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import RoomCard from "@/components/RoomCard";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  const [rooms, setRooms] = useState<Room[]>(initialRooms);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const stored = getStoredRooms();
+    if (stored) {
+      setRooms(stored);
+    }
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <>
       <Navbar />

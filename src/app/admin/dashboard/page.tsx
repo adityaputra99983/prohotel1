@@ -1,25 +1,36 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { getStoredBookings } from "@/lib/storage";
+
+const defaultBookings = [
+  { id: "1", status: "pending" },
+  { id: "2", status: "pending" },
+  { id: "3", status: "approved" },
+  { id: "4", status: "rejected" },
+];
 
 export default function AdminDashboard() {
-  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [stats, setStats] = useState({ pending: 2, approved: 3, rejected: 1 });
 
   useEffect(() => {
-    setMounted(true);
-    const isLoggedIn = localStorage.getItem("admin_logged_in");
-    if (!isLoggedIn) {
-      router.push("/admin");
+    const bookings = getStoredBookings();
+    if (bookings.length > 0) {
+      const counts = bookings.reduce(
+        (acc, b) => {
+          if (b.status === "pending") acc.pending++;
+          else if (b.status === "approved") acc.approved++;
+          else if (b.status === "rejected") acc.rejected++;
+          return acc;
+        },
+        { pending: 0, approved: 0, rejected: 0 }
+      );
+      setStats(counts);
     }
-  }, [router]);
-
-  const stats = {
-    pending: 2,
-    approved: 3,
-    rejected: 1,
-  };
+    setMounted(true);
+  }, []);
 
   if (!mounted) return null;
 
