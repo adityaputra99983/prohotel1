@@ -1,74 +1,215 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf8;
-  --foreground: #1c1c1a;
-  --primary: #2d5a3d;
-  --primary-light: #3d7a52;
-  --primary-dark: #1e3d29;
+  --bg-cream: #f5f2ec;
+  --bg-green-light: #eef5ef;
+  --bg-green-mid: #dce8de;
+  --surface: #ffffff;
+  --foreground: #0d241b;
+  --foreground-muted: #4a6b52;
+  --foreground-light: #7a9a7a;
+  --primary: #1a8a4a;
+  --primary-light: #4db870;
+  --primary-dark: #0f6a35;
+  --primary-glow: rgba(26, 138, 74, 0.15);
   --accent: #c4a35a;
   --accent-light: #d4b86a;
-  --earth: #8b7355;
-  --earth-light: #a08060;
-  --stone: #6b6b65;
-  --stone-light: #9a9a95;
+  --accent-glow: rgba(196, 163, 90, 0.12);
+  --earth: #7a6b4a;
+  --sky: #8fc8d8;
+  --shadow: rgba(13, 36, 27, 0.05);
+  --shadow-hover: rgba(13, 36, 27, 0.1);
+  --border: rgba(13, 36, 27, 0.06);
+  --border-hover: rgba(26, 138, 74, 0.15);
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-bg-cream: var(--bg-cream);
+  --color-bg-green-light: var(--bg-green-light);
+  --color-bg-green-mid: var(--bg-green-mid);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-light: var(--foreground-light);
   --color-primary: var(--primary);
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --color-earth: var(--earth);
-  --color-earth-light: var(--earth-light);
-  --color-stone: var(--stone);
-  --color-stone-light: var(--stone-light);
+  --color-sky: var(--sky);
   --font-sans: var(--font-geist-sans);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
+  background: var(--bg-cream);
   color: var(--foreground);
   font-family: 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-.nature-gradient {
-  background: linear-gradient(135deg, #2d5a3d 0%, #1e3d29 100%);
+::selection {
+  background: var(--primary);
+  color: white;
 }
 
-.leaf-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-5 10-15 15-25 20 10 5 20 10 25 20 5-10 15-15 25-20-10-5-20-10-25-20z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+.green-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+.green-gradient-light {
+  background: linear-gradient(180deg, var(--bg-green-light) 0%, var(--bg-cream) 100%);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: var(--primary);
   color: white;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary:hover {
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(45, 90, 61, 0.3);
+  box-shadow: 0 12px 40px var(--primary-glow), 0 4px 16px rgba(26, 138, 74, 0.15);
 }
 
-.card-nature {
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: white;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card-nature:hover {
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: translateY(-2px);
+}
+
+.card-green {
+  background: var(--surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 16px var(--shadow);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.card-green:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 48px var(--shadow-hover), 0 0 30px var(--primary-glow);
+  border-color: var(--border-hover);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.glass-nature {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(12px, -16px); }
+  66% { transform: translate(-6px, -8px); }
+}
+
+@keyframes gentle-drift {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% { transform: translate(50px, -80px); opacity: 0; }
+}
+
+@keyframes slow-zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { box-shadow: 0 0 8px var(--primary-glow); }
+  50% { box-shadow: 0 0 20px var(--primary-glow); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal-scale {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-float { animation: float 5s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+.animate-slow-zoom { animation: slow-zoom 20s ease-in-out infinite alternate; }
+.animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+
+.reveal {
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.reveal-up { transform: translateY(32px); }
+.reveal-scale { transform: scale(0.92); }
+
+.flip-card {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  background: var(--surface);
+  border: 1px solid var(--border);
 }

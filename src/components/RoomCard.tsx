@@ -2,95 +2,189 @@
 
 import { Room, formatPrice } from "@/data/rooms";
 import { saveBooking } from "@/lib/storage";
+import { useReveal } from "@/lib/useReveal";
+import { useState } from "react";
 
 interface RoomCardProps {
   room: Room;
+  index?: number;
 }
 
-export default function RoomCard({ room }: RoomCardProps) {
+export default function RoomCard({ room, index = 0 }: RoomCardProps) {
+  const { ref, isVisible } = useReveal();
+  const [flipped, setFlipped] = useState(false);
+
+  const openBooking = () => {
+    const modal = document.getElementById(`booking-modal-${room.id}`) as HTMLDialogElement;
+    modal?.showModal();
+  };
+
   return (
-    <div className="card-nature overflow-hidden group">
-      <div className="relative h-64 overflow-hidden">
-        <img
-          src={room.image}
-          alt={room.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="absolute top-4 left-4">
-          <span className="bg-white/90 backdrop-blur-sm text-primary-dark px-4 py-1.5 rounded-full text-sm font-semibold">
-            {room.size}
-          </span>
-        </div>
-        <div className="absolute bottom-4 right-4">
-          <span className="bg-primary text-white px-4 py-1.5 rounded-full text-sm font-medium">
-            Tersedia
-          </span>
-        </div>
-      </div>
+    <>
+      <div
+        ref={ref}
+        className={`flip-card reveal-up transition-all duration-700 ${
+          isVisible ? "is-visible" : ""
+        }`}
+        style={{ transitionDelay: `${index * 150}ms` }}
+      >
+        <div className={`flip-card-inner ${flipped ? "" : ""}`}>
+          <div className={`flip-card-front ${flipped ? "pointer-events-none" : ""}`}>
+            <div className="card-green h-full group cursor-default">
+              <div className="relative h-56 md:h-64 overflow-hidden">
+                <img
+                  src={room.image}
+                  alt={room.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-white/90 text-foreground px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm">
+                    {room.size}
+                  </span>
+                </div>
+                <div className="absolute bottom-3 right-3">
+                  <span className="bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-lg">
+                    Tersedia
+                  </span>
+                </div>
+              </div>
 
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="text-xl font-bold text-primary-dark">{room.name}</h3>
-          <div className="text-2xl">🌲</div>
-        </div>
-        
-        <p className="text-stone text-sm mb-5 line-clamp-2 leading-relaxed">
-          {room.desc}
-        </p>
+              <div className="p-5 md:p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg md:text-xl font-bold text-foreground">
+                    {room.name}
+                  </h3>
+                  <span className="text-base opacity-60">🌲</span>
+                </div>
 
-        <div className="flex flex-wrap gap-2 mb-5">
-          {room.amenities.slice(0, 5).map((amenity) => (
-            <span
-              key={amenity}
-              className="text-xs bg-stone-50 text-primary-dark px-3 py-1.5 rounded-full border border-stone-100"
-            >
-              {amenity}
-            </span>
-          ))}
-          {room.amenities.length > 5 && (
-            <span className="text-xs bg-primary/10 text-primary-dark px-3 py-1.5 rounded-full">
-              +{room.amenities.length - 5} lagi
-            </span>
-          )}
-        </div>
+                <p className="text-foreground-muted text-sm mb-4 line-clamp-2 leading-relaxed">
+                  {room.desc}
+                </p>
 
-        <div className="flex items-center justify-between pt-5 border-t border-stone-100">
-          <div>
-            <span className="text-2xl font-bold text-primary-dark">{formatPrice(room.price)}</span>
-            <span className="text-stone text-sm">/malam</span>
+                <div className="flex flex-wrap gap-1.5 mb-5">
+                  {room.amenities.slice(0, 4).map((amenity) => (
+                    <span
+                      key={amenity}
+                      className="text-[11px] text-foreground-muted px-2.5 py-1 rounded-lg bg-bg-green-light border border-border"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                  {room.amenities.length > 4 && (
+                    <span className="text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-lg font-medium">
+                      +{room.amenities.length - 4}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div>
+                    <span className="text-xl md:text-2xl font-bold text-primary">{formatPrice(room.price)}</span>
+                    <span className="text-foreground-muted text-xs">/malam</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setFlipped(true)}
+                      className="px-4 py-2 border border-border rounded-xl text-xs font-medium text-foreground-muted hover:border-primary/20 hover:text-primary hover:bg-primary/5 transition-all duration-200 flex items-center gap-1.5"
+                    >
+                      Detail
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={openBooking}
+                      className="btn-primary px-4 py-2 rounded-xl text-xs font-medium relative overflow-hidden group/btn"
+                    >
+                      <span className="relative z-10">Pesan</span>
+                      <span className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={() => {
-              const modal = document.getElementById(`booking-modal-${room.id}`) as HTMLDialogElement;
-              modal?.showModal();
-            }}
-            className="btn-primary px-6 py-2.5 rounded-full font-medium"
-          >
-            Pesan
-          </button>
+
+          <div className={`flip-card-back ${!flipped ? "pointer-events-none" : ""}`}>
+            <div className="h-full flex flex-col bg-white">
+              <div className="relative h-44 md:h-52 flex-shrink-0">
+                <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
+                <div className="absolute bottom-4 left-5">
+                  <h3 className="text-xl md:text-2xl font-bold text-foreground">{room.name}</h3>
+                  <p className="text-foreground-muted text-sm">{room.size}</p>
+                </div>
+                <button
+                  onClick={() => setFlipped(false)}
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm text-foreground flex items-center justify-center hover:bg-white transition-all shadow-sm text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="flex-1 p-5 md:p-6 overflow-y-auto">
+                <p className="text-foreground-muted text-sm leading-relaxed mb-5">
+                  {room.desc}
+                </p>
+
+                <div className="mb-5">
+                  <h4 className="text-sm font-bold text-foreground mb-3">Fasilitas Kamar</h4>
+                  <div className="grid grid-cols-2 gap-y-2 gap-x-3">
+                    {room.amenities.map((a) => (
+                      <span key={a} className="flex items-center gap-2 text-xs text-foreground-muted">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        {a}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                  <div>
+                    <span className="text-xl font-bold text-primary">{formatPrice(room.price)}</span>
+                    <span className="text-foreground-muted text-xs">/malam</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setFlipped(false)}
+                      className="px-4 py-2 border border-border rounded-xl text-xs font-medium text-foreground-muted hover:bg-bg-cream transition-colors"
+                    >
+                      Kembali
+                    </button>
+                    <button
+                      onClick={openBooking}
+                      className="btn-primary px-5 py-2 rounded-xl text-xs font-medium relative overflow-hidden group/btn"
+                    >
+                      <span className="relative z-10">Pesan</span>
+                      <span className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <dialog id={`booking-modal-${room.id}`} className="modal">
-        <div className="modal-box max-w-md bg-white p-6 rounded-2xl">
+        <div className="modal-box max-w-md bg-white p-6 rounded-2xl shadow-xl border border-primary/10">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-2xl">🌿</span>
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <span className="text-xl">🌿</span>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-primary-dark">Pesan {room.name}</h3>
-              <p className="text-stone text-sm">{room.size} • {formatPrice(room.price)}/malam</p>
+              <h3 className="text-xl font-bold text-foreground">Pesan {room.name}</h3>
+              <p className="text-foreground-muted text-sm">{room.size} &bull; {formatPrice(room.price)}/malam</p>
             </div>
           </div>
-          
+
           <form
             method="dialog"
             onSubmit={(e) => {
               e.preventDefault();
               const form = e.currentTarget as HTMLFormElement;
               const formData = new FormData(form);
-              
               const name = formData.get("name") as string;
               const phone = formData.get("phone") as string;
               const checkIn = formData.get("checkIn") as string;
@@ -136,60 +230,32 @@ export default function RoomCard({ room }: RoomCardProps) {
 
               const waUrl = `https://wa.me/62816781261273?text=${encodeURIComponent(message)}`;
               window.open(waUrl, "_blank");
-
               const dialog = document.getElementById(`booking-modal-${room.id}`) as HTMLDialogElement;
               dialog.close();
             }}
             className="space-y-5"
           >
             <div>
-              <label className="block text-sm font-medium text-primary-dark mb-2">Nama Lengkap</label>
-              <input
-                type="text"
-                name="name"
-                required
-                className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-stone-50/50"
-                placeholder="Masukkan nama Anda"
-              />
+              <label className="block text-sm font-medium text-foreground mb-2">Nama Lengkap</label>
+              <input type="text" name="name" required className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="Masukkan nama Anda" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary-dark mb-2">Nomor WhatsApp</label>
-              <input
-                type="tel"
-                name="phone"
-                required
-                className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-stone-50/50"
-                placeholder="628xxxxxxxxxx"
-              />
+              <label className="block text-sm font-medium text-foreground mb-2">Nomor WhatsApp</label>
+              <input type="tel" name="phone" required className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="628xxxxxxxxxx" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-primary-dark mb-2">Check-in</label>
-                <input
-                  type="date"
-                  name="checkIn"
-                  required
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-stone-50/50"
-                />
+                <label className="block text-sm font-medium text-foreground mb-2">Check-in</label>
+                <input type="date" name="checkIn" required min={new Date().toISOString().split("T")[0]} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground transition-all duration-200" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-primary-dark mb-2">Check-out</label>
-                <input
-                  type="date"
-                  name="checkOut"
-                  required
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-stone-50/50"
-                />
+                <label className="block text-sm font-medium text-foreground mb-2">Check-out</label>
+                <input type="date" name="checkOut" required min={new Date().toISOString().split("T")[0]} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground transition-all duration-200" />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-primary-dark mb-2">Jumlah Tamu</label>
-              <select
-                name="guests"
-                className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary bg-stone-50/50"
-              >
+              <label className="block text-sm font-medium text-foreground mb-2">Jumlah Tamu</label>
+              <select name="guests" className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground transition-all duration-200">
                 <option value="1">1 Tamu</option>
                 <option value="2">2 Tamu</option>
                 <option value="3">3 Tamu</option>
@@ -197,21 +263,10 @@ export default function RoomCard({ room }: RoomCardProps) {
               </select>
             </div>
             <div className="flex gap-3 pt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  const dialog = document.getElementById(`booking-modal-${room.id}`) as HTMLDialogElement;
-                  dialog.close();
-                }}
-                className="flex-1 py-3 border-2 border-stone-200 rounded-xl font-medium hover:bg-stone-50 transition-colors text-stone"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                className="flex-1 btn-primary py-3 rounded-xl font-medium"
-              >
-                📱 Kirim via WA
+              <button type="button" onClick={() => { const d = document.getElementById(`booking-modal-${room.id}`) as HTMLDialogElement; d.close(); }} className="flex-1 py-3 border-2 border-border rounded-xl font-medium hover:bg-bg-cream transition-colors text-foreground-muted">Batal</button>
+              <button type="submit" className="flex-1 btn-primary py-3 rounded-xl font-medium relative overflow-hidden group/btn">
+                <span className="relative z-10"> Kirim via WA</span>
+                <span className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
               </button>
             </div>
           </form>
@@ -220,6 +275,6 @@ export default function RoomCard({ room }: RoomCardProps) {
           <button className="cursor-default">tutup</button>
         </form>
       </dialog>
-    </div>
+    </>
   );
 }

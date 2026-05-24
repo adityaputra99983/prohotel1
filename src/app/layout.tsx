@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 export const metadata: Metadata = {
   title: "Forest Haven Resort - Penginapan Alam Kelas Atas",
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className="min-h-full flex flex-col antialiased">
-        {children}
+        <AnimatedBackground />
+        <main className="relative z-10 flex-1">
+          {children}
+        </main>
       </body>
     </html>
   );
