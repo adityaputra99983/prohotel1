@@ -25,12 +25,12 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
         ref={ref}
         className={`flip-card reveal-up transition-all duration-700 ${
           isVisible ? "is-visible" : ""
-        }`}
+        } ${flipped ? "flipped" : ""}`}
         style={{ transitionDelay: `${index * 150}ms` }}
       >
-        <div className={`flip-card-inner ${flipped ? "" : ""}`}>
+        <div className="flip-card-inner">
           <div className={`flip-card-front ${flipped ? "pointer-events-none" : ""}`}>
-            <div className="card-green h-full group cursor-default">
+            <div className="card-green h-full group cursor-pointer" onClick={() => setFlipped(true)}>
               <div className="relative h-56 md:h-64 overflow-hidden">
                 <img
                   src={room.image}
@@ -107,7 +107,7 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
           </div>
 
           <div className={`flip-card-back ${!flipped ? "pointer-events-none" : ""}`}>
-            <div className="h-full flex flex-col bg-white">
+            <div className="h-full flex flex-col bg-white cursor-pointer" onClick={() => setFlipped(false)}>
               <div className="relative h-44 md:h-52 flex-shrink-0">
                 <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
@@ -116,14 +116,14 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
                   <p className="text-foreground-muted text-sm">{room.size}</p>
                 </div>
                 <button
-                  onClick={() => setFlipped(false)}
+                  onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
                   className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm text-foreground flex items-center justify-center hover:bg-white transition-all shadow-sm text-sm"
                 >
                   ✕
                 </button>
               </div>
 
-              <div className="flex-1 p-5 md:p-6 overflow-y-auto">
+              <div className="flex-1 p-5 md:p-6 overflow-y-auto cursor-auto" onClick={(e) => e.stopPropagation()}>
                 <p className="text-foreground-muted text-sm leading-relaxed mb-5">
                   {room.desc}
                 </p>
@@ -147,13 +147,13 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setFlipped(false)}
+                      onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
                       className="px-4 py-2 border border-border rounded-xl text-xs font-medium text-foreground-muted hover:bg-bg-cream transition-colors"
                     >
                       Kembali
                     </button>
                     <button
-                      onClick={openBooking}
+                      onClick={(e) => { e.stopPropagation(); openBooking(); }}
                       className="btn-primary px-5 py-2 rounded-xl text-xs font-medium relative overflow-hidden group/btn"
                     >
                       <span className="relative z-10">Pesan</span>

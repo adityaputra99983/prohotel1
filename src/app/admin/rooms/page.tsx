@@ -5,10 +5,11 @@ import { rooms as initialRooms, Room, formatPrice } from "@/data/rooms";
 import { getStoredRooms, saveStoredRooms } from "@/lib/storage";
 
 export default function AdminRooms() {
-  const [rooms, setRooms] = useState<Room[]>(initialRooms);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [mounted, setMounted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const [form, setForm] = useState({ name: "", desc: "", price: "", size: "", amenities: "", image: "" });
 
   useEffect(() => {
     const stored = getStoredRooms();
@@ -16,122 +17,110 @@ export default function AdminRooms() {
       setRooms(stored);
     } else {
       saveStoredRooms(initialRooms);
+      setRooms(initialRooms);
     }
     setMounted(true);
   }, []);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    desc: "",
-    price: "",
-    size: "",
-    amenities: "",
-    image: "",
-  });
-
-  const openModal = (room?: Room) => {
-    if (room) {
-      setEditingRoom(room);
-      setFormData({
-        name: room.name,
-        desc: room.desc,
-        price: room.price.toString(),
-        size: room.size,
-        amenities: room.amenities.join(", "),
-        image: room.image,
-      });
-    } else {
-      setEditingRoom(null);
-      setFormData({ name: "", desc: "", price: "", size: "", amenities: "", image: "" });
-    }
-    setIsModalOpen(true);
+  const openAdd = () => {
+    setEditingRoom(null);
+    setForm({ name: "", desc: "", price: "", size: "", amenities: "", image: "" });
+    setShowModal(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingRoom(null);
+  const openEdit = (room: Room) => {
+    setEditingRoom(room);
+    setForm({
+      name: room.name,
+      desc: room.desc,
+      price: room.price.toString(),
+      size: room.size,
+      amenities: room.amenities.join(", "),
+      image: room.image,
+    });
+    setShowModal(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     const roomData: Room = {
       id: editingRoom?.id || `room-${Date.now()}`,
-      name: formData.name,
-      desc: formData.desc,
-      price: parseInt(formData.price),
-      size: formData.size,
-      amenities: formData.amenities.split(", ").map((a) => a.trim()),
-      image: formData.image || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
+      name: form.name,
+      desc: form.desc,
+      price: parseInt(form.price),
+      size: form.size,
+      amenities: form.amenities.split(",").map((a) => a.trim()).filter(Boolean),
+      image: form.image || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
     };
 
-    let updatedRooms: Room[];
+    let updated: Room[];
     if (editingRoom) {
-      updatedRooms = rooms.map((r) => (r.id === editingRoom.id ? roomData : r));
+      updated = rooms.map((r) => (r.id === editingRoom.id ? roomData : r));
     } else {
-      updatedRooms = [...rooms, roomData];
+      updated = [...rooms, roomData];
     }
-    
-    setRooms(updatedRooms);
-    saveStoredRooms(updatedRooms);
-    closeModal();
+    setRooms(updated);
+    saveStoredRooms(updated);
+    setShowModal(false);
   };
 
   const deleteRoom = (id: string) => {
-    if (confirm("Yakin ingin menghapus kamar ini?")) {
-      const updated = rooms.filter((r) => r.id !== id);
-      setRooms(updated);
-      saveStoredRooms(updated);
-    }
+    if (!confirm("Yakin ingin menghapus kamar ini?")) return;
+    const updated = rooms.filter((r) => r.id !== id);
+    setRooms(updated);
+    saveStoredRooms(updated);
   };
 
   if (!mounted) return null;
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+    <div className="animate-[fade-in-up_0.4s_ease-out]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 style={{ fontSize: "28px", fontWeight: "bold", color: "#1e3d29", marginBottom: "8px" }}>Kelola Kamar</h1>
-          <p style={{ color: "#6b6b65" }}>Tambah, edit, atau hapus tipe kamar</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Kelola Kamar</h1>
+          <p className="text-foreground-muted mt-1">Tambah, edit, atau hapus tipe kamar</p>
         </div>
-        <button
-          onClick={() => openModal()}
-          style={{ padding: "12px 24px", background: "#2d5a3d", color: "white", borderRadius: "12px", fontWeight: "600", border: "none", cursor: "pointer" }}
-        >
-          + Tambah Kamar
+        <button onClick={openAdd} className="btn-primary px-5 py-2.5 rounded-xl text-sm inline-flex items-center gap-2 w-fit">
+          <span>+</span>
+          <span>Tambah Kamar</span>
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {rooms.map((room) => (
-          <div key={room.id} style={{ background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", overflow: "hidden" }}>
-            <div style={{ height: "192px", position: "relative" }}>
-              <img src={room.image} alt={room.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(255,255,255,0.9)", padding: "4px 12px", borderRadius: "999px", fontSize: "14px", fontWeight: "600", color: "#1e3d29" }}>
+          <div key={room.id} className="bg-white rounded-2xl border border-border overflow-hidden group hover:shadow-lg hover:border-primary/10 transition-all duration-300">
+            <div className="relative h-48 overflow-hidden">
+              <img src={room.image} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-foreground px-3 py-1 rounded-lg text-xs font-semibold shadow-sm">
                 {room.size}
               </div>
             </div>
 
-            <div style={{ padding: "20px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#1e3d29", marginBottom: "8px" }}>{room.name}</h3>
-              <p style={{ color: "#6b6b65", fontSize: "14px", marginBottom: "12px" }}>{room.desc}</p>
-              
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "16px" }}>
-                {room.amenities.slice(0, 3).map((amenity) => (
-                  <span key={amenity} style={{ fontSize: "12px", background: "#f3f4f6", color: "#6b6b65", padding: "4px 8px", borderRadius: "4px" }}>
-                    {amenity}
-                  </span>
+            <div className="p-5">
+              <h3 className="text-lg font-bold text-foreground mb-2">{room.name}</h3>
+              <p className="text-foreground-muted text-sm leading-relaxed mb-4 line-clamp-2">{room.desc}</p>
+
+              <div className="flex flex-wrap gap-1.5 mb-5">
+                {room.amenities.slice(0, 4).map((a) => (
+                  <span key={a} className="text-[11px] text-foreground-muted bg-bg-cream px-2.5 py-1 rounded-lg border border-border">{a}</span>
                 ))}
+                {room.amenities.length > 4 && (
+                  <span className="text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-lg font-medium">+{room.amenities.length - 4}</span>
+                )}
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "16px", borderTop: "1px solid #e5e5e5" }}>
+              <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div>
-                  <span style={{ fontSize: "20px", fontWeight: "bold", color: "#1e3d29" }}>{formatPrice(room.price)}</span>
-                  <span style={{ color: "#6b6b65", fontSize: "14px" }}>/malam</span>
+                  <span className="text-xl font-bold text-primary">{formatPrice(room.price)}</span>
+                  <span className="text-foreground-muted text-xs">/malam</span>
                 </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button onClick={() => openModal(room)} style={{ padding: "8px", color: "#2d5a3d", background: "#f3f4f6", borderRadius: "8px", border: "none", cursor: "pointer" }}>✏️</button>
-                  <button onClick={() => deleteRoom(room.id)} style={{ padding: "8px", color: "#dc2626", background: "#fee2e2", borderRadius: "8px", border: "none", cursor: "pointer" }}>🗑️</button>
+                <div className="flex gap-1.5">
+                  <button onClick={() => openEdit(room)} className="w-9 h-9 rounded-lg bg-bg-cream text-foreground-muted hover:text-primary hover:bg-primary/5 border border-border transition-all text-sm flex items-center justify-center" title="Edit">
+                    ✏️
+                  </button>
+                  <button onClick={() => deleteRoom(room.id)} className="w-9 h-9 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 transition-all text-sm flex items-center justify-center" title="Hapus">
+                    🗑
+                  </button>
                 </div>
               </div>
             </div>
@@ -139,43 +128,51 @@ export default function AdminRooms() {
         ))}
       </div>
 
-      {isModalOpen && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50 }}>
-          <div style={{ background: "white", padding: "32px", borderRadius: "16px", width: "100%", maxWidth: "500px", maxHeight: "90vh", overflow: "auto" }}>
-            <h3 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e3d29", marginBottom: "24px" }}>
-              {editingRoom ? "Edit Kamar" : "Tambah Kamar Baru"}
-            </h3>
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-[fade-in-up_0.3s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-6 py-5 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-bold text-foreground">
+                {editingRoom ? "Edit Kamar" : "Tambah Kamar Baru"}
+              </h3>
+              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg bg-bg-cream text-foreground-muted hover:text-foreground flex items-center justify-center transition-colors text-sm">✕</button>
+            </div>
 
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div>
-                <label style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#1e3d29", marginBottom: "8px" }}>Nama Kamar</label>
-                <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e5e5", borderRadius: "12px" }} required />
+                <label className="block text-sm font-medium text-foreground mb-2">Nama Kamar</label>
+                <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="Deluxe Room" required />
               </div>
-
               <div>
-                <label style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#1e3d29", marginBottom: "8px" }}>Deskripsi</label>
-                <textarea value={formData.desc} onChange={(e) => setFormData({ ...formData, desc: e.target.value })} style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e5e5", borderRadius: "12px", minHeight: "80px" }} required />
+                <label className="block text-sm font-medium text-foreground mb-2">Deskripsi</label>
+                <textarea value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200 min-h-[80px]" placeholder="Deskripsi kamar..." required />
               </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#1e3d29", marginBottom: "8px" }}>Harga</label>
-                  <input type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e5e5", borderRadius: "12px" }} required />
+                  <label className="block text-sm font-medium text-foreground mb-2">Harga (Rp)</label>
+                  <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="850000" required />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#1e3d29", marginBottom: "8px" }}>Ukuran</label>
-                  <input type="text" value={formData.size} onChange={(e) => setFormData({ ...formData, size: e.target.value })} style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e5e5", borderRadius: "12px" }} placeholder="35 m²" required />
+                  <label className="block text-sm font-medium text-foreground mb-2">Ukuran</label>
+                  <input type="text" value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="35 m²" required />
                 </div>
               </div>
-
               <div>
-                <label style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#1e3d29", marginBottom: "8px" }}>Fasilitas (pisahkan dengan koma)</label>
-                <input type="text" value={formData.amenities} onChange={(e) => setFormData({ ...formData, amenities: e.target.value })} style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e5e5", borderRadius: "12px" }} required />
+                <label className="block text-sm font-medium text-foreground mb-2">Fasilitas (pisahkan dengan koma)</label>
+                <input type="text" value={form.amenities} onChange={(e) => setForm({ ...form, amenities: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="King Bed, AC, Smart TV" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">URL Gambar (opsional)</label>
+                <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="w-full px-4 py-3 bg-bg-cream rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground placeholder-foreground-light/60 transition-all duration-200" placeholder="https://..." />
               </div>
 
-              <div style={{ display: "flex", gap: "12px", paddingTop: "12px" }}>
-                <button type="button" onClick={closeModal} style={{ flex: 1, padding: "14px", border: "2px solid #e5e5e5", borderRadius: "12px", background: "white", cursor: "pointer" }}>Batal</button>
-                <button type="submit" style={{ flex: 1, padding: "14px", background: "#2d5a3d", color: "white", borderRadius: "12px", border: "none", fontWeight: "600", cursor: "pointer" }}>
+              <div className="flex gap-3 pt-3">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 border-2 border-border rounded-xl font-medium hover:bg-bg-cream transition-colors text-foreground-muted">Batal</button>
+                <button type="submit" className="flex-1 btn-primary py-3 rounded-xl font-medium">
                   {editingRoom ? "Simpan" : "Tambah"}
                 </button>
               </div>

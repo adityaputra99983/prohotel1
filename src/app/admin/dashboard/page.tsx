@@ -1,19 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getStoredBookings } from "@/lib/storage";
 
-const defaultBookings = [
-  { id: "1", status: "pending" },
-  { id: "2", status: "pending" },
-  { id: "3", status: "approved" },
-  { id: "4", status: "rejected" },
-];
-
 export default function AdminDashboard() {
   const [mounted, setMounted] = useState(false);
-  const [stats, setStats] = useState({ pending: 2, approved: 3, rejected: 1 });
+  const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0 });
 
   useEffect(() => {
     const bookings = getStoredBookings();
@@ -27,7 +20,7 @@ export default function AdminDashboard() {
         },
         { pending: 0, approved: 0, rejected: 0 }
       );
-      setStats(counts);
+      setStats({ ...counts, total: bookings.length });
     }
     setMounted(true);
   }, []);
@@ -35,63 +28,67 @@ export default function AdminDashboard() {
   if (!mounted) return null;
 
   return (
-    <div>
-      <div style={{ marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", color: "#1e3d29", marginBottom: "8px" }}>Dashboard</h1>
-        <p style={{ color: "#6b6b65" }}>Kelola booking dan kamar Resort Anda</p>
+    <div className="animate-[fade-in-up_0.4s_ease-out]">
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Dashboard</h1>
+        <p className="text-foreground-muted mt-1">Kelola booking dan kamar Resort Anda</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "24px" }}>
-        <a href="/admin/bookings" style={{ background: "white", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontSize: "24px" }}>⏳</span>
-          </div>
-          <div>
-            <p style={{ fontSize: "28px", fontWeight: "bold", color: "#1e3d29" }}>{stats.pending}</p>
-            <p style={{ color: "#6b6b65" }}>Menunggu</p>
-          </div>
-        </a>
-
-        <a href="/admin/bookings" style={{ background: "white", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontSize: "24px" }}>✅</span>
-          </div>
-          <div>
-            <p style={{ fontSize: "28px", fontWeight: "bold", color: "#1e3d29" }}>{stats.approved}</p>
-            <p style={{ color: "#6b6b65" }}>Diterima</p>
-          </div>
-        </a>
-
-        <a href="/admin/bookings" style={{ background: "white", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontSize: "24px" }}>❌</span>
-          </div>
-          <div>
-            <p style={{ fontSize: "28px", fontWeight: "bold", color: "#1e3d29" }}>{stats.rejected}</p>
-            <p style={{ color: "#6b6b65" }}>Ditolak</p>
-          </div>
-        </a>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+        <StatCard href="/admin/bookings" icon="⏳" label="Menunggu" value={stats.pending} bgClass="bg-amber-50 border-amber-100" iconClass="bg-amber-100" valueClass="text-amber-700" filter="pending" />
+        <StatCard href="/admin/bookings" icon="✅" label="Diterima" value={stats.approved} bgClass="bg-green-50 border-green-100" iconClass="bg-green-100" valueClass="text-green-700" filter="approved" />
+        <StatCard href="/admin/bookings" icon="❌" label="Ditolak" value={stats.rejected} bgClass="bg-red-50 border-red-100" iconClass="bg-red-100" valueClass="text-red-700" filter="rejected" />
       </div>
 
-      <div style={{ marginTop: "32px", background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", overflow: "hidden" }}>
-        <div style={{ padding: "24px", borderBottom: "1px solid #e5e5e5" }}>
-          <h2 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e3d29" }}>📋 Menu Admin</h2>
+      <div className="mt-8 bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="px-6 py-5 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-bold text-foreground">Menu Admin</h2>
+          <span className="text-xs text-foreground-muted bg-bg-cream px-3 py-1 rounded-lg">{stats.total} total booking</span>
         </div>
-        <div style={{ padding: "16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-          <a href="/admin/bookings" style={{ padding: "24px", background: "#f5f5f4", borderRadius: "12px", textAlign: "center" }}>
-            <span style={{ fontSize: "32px", display: "block", marginBottom: "8px" }}>📅</span>
-            <span style={{ fontWeight: "600", color: "#1e3d29" }}>Kelola Booking</span>
-          </a>
-          <a href="/admin/rooms" style={{ padding: "24px", background: "#f5f5f4", borderRadius: "12px", textAlign: "center" }}>
-            <span style={{ fontSize: "32px", display: "block", marginBottom: "8px" }}>🏠</span>
-            <span style={{ fontWeight: "600", color: "#1e3d29" }}>Kelola Kamar</span>
-          </a>
-          <a href="/" style={{ padding: "24px", background: "#2d5a3d", borderRadius: "12px", textAlign: "center" }}>
-            <span style={{ fontSize: "32px", display: "block", marginBottom: "8px" }}>🌐</span>
-            <span style={{ fontWeight: "600", color: "white" }}>Lihat Website</span>
-          </a>
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <MenuCard href="/admin/bookings" icon="📅" label="Kelola Booking" desc="Lihat dan kelola pemesanan" />
+          <MenuCard href="/admin/rooms" icon="🏠" label="Kelola Kamar" desc="Tambah, edit, hapus kamar" />
+          <MenuCard href="/" icon="🌐" label="Lihat Website" desc="Kembali ke halaman utama" primary />
         </div>
       </div>
     </div>
+  );
+}
+
+function StatCard({ href, icon, label, value, bgClass, iconClass, valueClass, filter }: {
+  href: string; icon: string; label: string; value: number; bgClass: string; iconClass: string; valueClass: string; filter: string;
+}) {
+  return (
+    <Link
+      href={filter === "pending" ? "/admin/bookings" : `/admin/bookings?filter=${filter}`}
+      className={`rounded-2xl border p-5 md:p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${bgClass}`}
+    >
+      <div className="flex items-center gap-4">
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg ${iconClass}`}>
+          {icon}
+        </div>
+        <div>
+          <p className={`text-2xl md:text-3xl font-bold ${valueClass}`}>{value}</p>
+          <p className="text-foreground-muted text-sm">{label}</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function MenuCard({ href, icon, label, desc, primary }: { href: string; icon: string; label: string; desc: string; primary?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+        primary
+          ? "bg-primary text-white hover:shadow-primary/20"
+          : "bg-bg-cream text-foreground hover:shadow-sm border border-border"
+      }`}
+    >
+      <span className="text-2xl block mb-3">{icon}</span>
+      <span className="font-bold text-sm block mb-1">{label}</span>
+      <span className={`text-xs ${primary ? "text-white/65" : "text-foreground-muted"}`}>{desc}</span>
+    </Link>
   );
 }
