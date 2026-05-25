@@ -101,11 +101,7 @@ body {
   overflow: hidden;
 }
 
-.card-green:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px var(--shadow-hover), 0 0 30px var(--primary-glow);
-  border-color: var(--border-hover);
-}
+
 
 .text-gradient {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
@@ -164,6 +160,22 @@ body {
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes move-wave {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(30px, 30px) rotate(180deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
 .animate-float { animation: float 5s ease-in-out infinite; }
 .animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
 .animate-slow-zoom { animation: slow-zoom 20s ease-in-out infinite alternate; }
@@ -189,9 +201,18 @@ body {
 .flip-card-inner {
   position: relative;
   width: 100%;
-  min-height: 500px;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 480px;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .flip-card-inner {
+    min-height: 440px;
+  }
 }
 
 .flip-card.flipped .flip-card-inner {
@@ -204,12 +225,167 @@ body {
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 1.25rem;
+  border-radius: 1.5rem;
   overflow: hidden;
+  transition: all 0.4s ease;
 }
 
 .flip-card-back {
   transform: rotateY(180deg);
   background: var(--surface);
   border: 1px solid var(--border);
+}
+
+/* Enhanced flip card hover effects */
+.flip-card-front:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px var(--shadow-hover), 0 0 30px var(--primary-glow);
+}
+
+.flip-card-back {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Dialog / Modal improvements */
+.modal-box {
+  border-radius: 1.75rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: var(--surface);
+}
+
+@media (max-width: 480px) {
+  .modal-box {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+}
+
+/* Button enhancements */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px var(--primary-glow), 0 4px 16px rgba(26, 138, 74, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary button style */
+.border-border {
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+  background: transparent !important;
+}
+
+.border-border:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  background: rgba(26, 138, 74, 0.05) !important;
+}
+
+/* Dialog / Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, overlay 0.25s ease allow-discrete, display 0.25s ease allow-discrete;
+}
+
+.modal[open] {
+  opacity: 1;
+}
+
+@starting-style {
+  .modal[open] {
+    opacity: 0;
+  }
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: none;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 28rem;
+  max-height: 90dvh;
+  overflow-y: auto;
+  animation: modal-enter 0.3s ease-out;
+}
+
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+  .modal-box {
+    border-radius: 1.25rem 1.25rem 0 0;
+    max-height: 85dvh;
+  }
+}
+
+@media (hover: hover) {
+  .card-green:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px var(--shadow-hover), 0 0 30px var(--primary-glow);
+    border-color: var(--border-hover);
+  }
+}
+
+@media (hover: none) {
+  .card-green:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow-hover);
+  }
+  .btn-primary:hover, .btn-outline:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+}
+
+@media (min-width: 2000px) {
+  html { font-size: 18px; }
 }

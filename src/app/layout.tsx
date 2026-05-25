@@ -5,6 +5,12 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 export const metadata: Metadata = {
   title: "Forest Haven Resort - Penginapan Alam Kelas Atas",
   description: "Nikmati pengalaman menginap yang tak terlupakan di Forest Haven Resort. Fasilitas premium, layanan terbaik, dan ketenangan hutan alam.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({

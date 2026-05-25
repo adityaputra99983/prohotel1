@@ -21,13 +21,13 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
 
   return (
     <>
-      <div
-        ref={ref}
-        className={`flip-card reveal-up transition-all duration-700 ${
-          isVisible ? "is-visible" : ""
-        } ${flipped ? "flipped" : ""}`}
-        style={{ transitionDelay: `${index * 150}ms` }}
-      >
+       <div
+         ref={ref}
+         className={`flip-card reveal-up transition-all duration-800 ${
+           isVisible ? "is-visible" : ""
+         } ${flipped ? "flipped" : ""}`}
+         style={{ transitionDelay: `${index * 100}ms` }}
+       >
         <div className="flip-card-inner">
           <div className={`flip-card-front ${flipped ? "pointer-events-none" : ""}`}>
             <div className="card-green h-full group cursor-pointer" onClick={() => setFlipped(true)}>
@@ -106,64 +106,70 @@ export default function RoomCard({ room, index = 0 }: RoomCardProps) {
             </div>
           </div>
 
-          <div className={`flip-card-back ${!flipped ? "pointer-events-none" : ""}`}>
-            <div className="h-full flex flex-col bg-white cursor-pointer" onClick={() => setFlipped(false)}>
-              <div className="relative h-44 md:h-52 flex-shrink-0">
-                <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
-                <div className="absolute bottom-4 left-5">
-                  <h3 className="text-xl md:text-2xl font-bold text-foreground">{room.name}</h3>
-                  <p className="text-foreground-muted text-sm">{room.size}</p>
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
-                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm text-foreground flex items-center justify-center hover:bg-white transition-all shadow-sm text-sm"
-                >
-                  ✕
-                </button>
-              </div>
+           <div className={`flip-card-back ${!flipped ? "pointer-events-none" : ""}`}>
+             <div className="h-full flex flex-col bg-white shadow-lg cursor-pointer" onClick={() => setFlipped(false)}>
+               <div className="relative h-44 md:h-52 flex-shrink-0">
+                 <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
+                 <div className="absolute bottom-4 left-5">
+                   <h3 className="text-xl md:text-2xl font-bold text-foreground">{room.name}</h3>
+                   <p className="text-foreground-muted text-sm">{room.size}</p>
+                 </div>
+                 <button
+                   onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
+                   className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur text-foreground flex items-center justify-center hover:bg-white/50 transition-all duration-200 shadow-md text-lg"
+                 >
+                   ✕
+                 </button>
+               </div>
 
-              <div className="flex-1 p-5 md:p-6 overflow-y-auto cursor-auto" onClick={(e) => e.stopPropagation()}>
-                <p className="text-foreground-muted text-sm leading-relaxed mb-5">
-                  {room.desc}
-                </p>
+               <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+                 <div className="space-y-6">
+                   <p className="text-foreground text-sm leading-relaxed">
+                     {room.desc}
+                   </p>
 
-                <div className="mb-5">
-                  <h4 className="text-sm font-bold text-foreground mb-3">Fasilitas Kamar</h4>
-                  <div className="grid grid-cols-2 gap-y-2 gap-x-3">
-                    {room.amenities.map((a) => (
-                      <span key={a} className="flex items-center gap-2 text-xs text-foreground-muted">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                        {a}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                   <div className="space-y-5">
+                     <div>
+                       <h4 className="text-sm font-semibold text-foreground mb-3">Fasilitas Kamar</h4>
+                       <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
+                         {room.amenities.map((a) => (
+                           <div key={a} className="flex items-center gap-3">
+                             <div className="w-2.5 h-2.5 rounded-full bg-primary flex-shrink-0" />
+                             <span className="text-foreground">{a}</span>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                  <div>
-                    <span className="text-xl font-bold text-primary">{formatPrice(room.price)}</span>
-                    <span className="text-foreground-muted text-xs">/malam</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
-                      className="px-4 py-2 border border-border rounded-xl text-xs font-medium text-foreground-muted hover:bg-bg-cream transition-colors"
-                    >
-                      Kembali
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); openBooking(); }}
-                      className="btn-primary px-5 py-2 rounded-xl text-xs font-medium relative overflow-hidden group/btn"
-                    >
-                      <span className="relative z-10">Pesan</span>
-                      <span className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                     <div className="pt-4 border-t border-border">
+                       <div className="flex items-center justify-between">
+                         <div className="text-right">
+                           <p className="text-foreground-muted text-sm">Harga per malam</p>
+                           <p className="text-2xl font-bold text-primary">{formatPrice(room.price)}</p>
+                         </div>
+                         <div className="flex gap-3">
+                           <button
+                             onClick={(e) => { e.stopPropagation(); setFlipped(false); }}
+                             className="flex-1 px-5 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                           >
+                             Kembali
+                           </button>
+                           <button
+                             onClick={(e) => { e.stopPropagation(); openBooking(); }}
+                             className="flex-1 btn-primary px-5 py-3 text-sm font-medium relative overflow-hidden group/btn"
+                           >
+                             <span className="relative z-10">Pesan Sekarang</span>
+                             <span className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                           </button>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
         </div>
       </div>
 
