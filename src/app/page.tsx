@@ -22,14 +22,14 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <>
+    <div className="main-content">
       <Navbar />
       <Hero />
       <RoomsSection rooms={rooms} />
       <FacilitiesSection />
       <PromoSection />
       <Footer />
-    </>
+    </div>
   );
 }
 

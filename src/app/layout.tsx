@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="id">
       <body className="min-h-full flex flex-col antialiased">
         <AnimatedBackground />
-        <main className="relative z-10 flex-1">
+        <main className="relative z-10 flex-1 luxury-main">
           {children}
         </main>
       </body>
