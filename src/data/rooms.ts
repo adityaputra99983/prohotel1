@@ -4,6 +4,7 @@ export interface Room {
   desc: string;
   price: number;
   image: string;
+  gallery?: string[];
   amenities: string[];
   size: string;
 }
@@ -15,6 +16,11 @@ export const rooms: Room[] = [
     desc: "Kamar Deluxe yang elegan dengan fasilitas lengkap, perfect untuk pasangan atau travelersolo yang menginginkan kenyamanan optimal.",
     price: 850000,
     image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1587985064135-0366536eab42?w=800&auto=format&fit=crop&q=80",
+    ],
     amenities: ["King Bed", "AC", "Smart TV", "WiFi", "Mini Bar", "Hot Shower", "Safety Box"],
     size: "35 m²"
   },
@@ -24,6 +30,11 @@ export const rooms: Room[] = [
     desc: "Kamar Suite luas dengan ruang tamu terpisah,view yang menakjubkan, dan fasilitas premium untuk pengalaman menginap yang tak terlupakan.",
     price: 1500000,
     image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop&q=80",
+    ],
     amenities: ["King Bed", "AC", "Smart TV", "WiFi", "Mini Bar", "Hot Shower", "Safety Box", "Living Room", "Bathtub"],
     size: "55 m²"
   },
@@ -33,6 +44,11 @@ export const rooms: Room[] = [
     desc: "Kamar Premium eksklusif dengan desain mewah, balkon private, jacuzzi, dan layanan butler untuk tamu VIP yang menginginkan yang terbaik.",
     price: 2500000,
     image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600494601289-3b17b3a8b6db?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=80",
+    ],
     amenities: ["King Bed", "AC", "Smart TV", "WiFi", "Mini Bar", "Hot Shower", "Safety Box", "Living Room", "Bathtub", "Jacuzzi", "Balkon", "Butler Service"],
     size: "75 m²"
   }

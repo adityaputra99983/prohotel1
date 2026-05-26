@@ -46,7 +46,12 @@ export function deleteBooking(id: string): void {
 export function getStoredRooms(): Room[] | null {
   if (typeof window === "undefined") return null;
   const stored = localStorage.getItem(STORAGE_KEYS.rooms);
-  return stored ? JSON.parse(stored) : null;
+  if (!stored) return null;
+  const rooms: Room[] = JSON.parse(stored);
+  return rooms.map((r) => ({
+    ...r,
+    gallery: r.gallery && r.gallery.length > 0 ? r.gallery : undefined,
+  }));
 }
 
 export function saveStoredRooms(rooms: Room[]): void {
