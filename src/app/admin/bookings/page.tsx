@@ -59,19 +59,19 @@ export default function AdminBookings() {
   const totalPending = bookings.filter((b) => b.status === "pending").length;
 
   return (
-    <div>
+    <div className="max-w-6xl">
       {/* HEADER */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/20">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/20">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Booking</h1>
-              <p className="text-foreground-muted text-sm">{bookings.length} total pemesanan</p>
+              <p className="text-foreground-muted text-sm mt-0.5">{bookings.length} total pemesanan</p>
             </div>
           </div>
           {totalPending > 0 && (
@@ -84,22 +84,22 @@ export default function AdminBookings() {
       </div>
 
       {/* FILTER TABS */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
         {tabs.map((t) => {
           const count = t.key === "all" ? bookings.length : bookings.filter((b) => b.status === t.key).length;
           return (
             <button
               key={t.key}
               onClick={() => setFilter(t.key as typeof filter)}
-              className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-300 flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${
                 filter === t.key
-                  ? "bg-primary text-white shadow-lg shadow-primary/25"
-                  : "bg-white text-foreground-muted border border-border hover:border-primary/20 hover:text-primary hover:shadow-sm"
+                  ? "bg-primary text-white shadow-md shadow-primary/20"
+                  : "bg-white text-foreground border border-border/70 hover:border-primary/20 hover:text-primary"
               }`}
             >
               {t.label}
-              <span className={`text-xs px-1.5 py-0.5 rounded-md ${
-                filter === t.key ? "bg-white/20" : "bg-bg-cream text-foreground-light"
+                  <span className={`text-xs px-1.5 py-0.5 rounded-md ${
+                filter === t.key ? "bg-white/20" : "bg-bg-cream text-foreground"
               }`}>
                 {count}
               </span>
@@ -109,7 +109,7 @@ export default function AdminBookings() {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-border/70 overflow-hidden shadow-sm">
         {filtered.length === 0 ? (
           <div className="py-20 text-center">
             <div className="w-16 h-16 rounded-2xl bg-bg-cream flex items-center justify-center mx-auto mb-4">
@@ -117,69 +117,69 @@ export default function AdminBookings() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <p className="text-foreground-muted font-medium">Belum ada booking</p>
-            <p className="text-foreground-light text-sm mt-1">Booking akan muncul di sini setelah tamu melakukan pemesanan</p>
+            <p className="text-foreground font-medium">Belum ada booking</p>
+            <p className="text-foreground text-sm mt-1">Booking akan muncul di sini setelah tamu melakukan pemesanan</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-bg-cream to-bg-green-light/50">
-                  <th className="text-left px-5 py-4 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Tamu</th>
-                  <th className="text-left px-5 py-4 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider hidden md:table-cell">Kamar</th>
-                  <th className="text-left px-5 py-4 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider hidden lg:table-cell">Tanggal</th>
-                  <th className="text-left px-5 py-4 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Status</th>
-                  <th className="text-right px-5 py-4 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Aksi</th>
+                <tr className="bg-gradient-to-r from-bg-cream to-bg-green-light/50 border-b border-border/50">
+                  <th className="text-left px-4 md:px-5 py-3.5 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Tamu</th>
+                  <th className="text-left px-4 md:px-5 py-3.5 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider hidden md:table-cell">Kamar</th>
+                  <th className="text-left px-4 md:px-5 py-3.5 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider hidden lg:table-cell">Tanggal</th>
+                  <th className="text-left px-4 md:px-5 py-3.5 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Status</th>
+                  <th className="text-right px-4 md:px-5 py-3.5 text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/50">
+              <tbody className="divide-y divide-border/40">
                 {filtered.map((booking, i) => {
                   const st = statusStyles[booking.status];
                   return (
                     <tr
                       key={booking.id}
-                      className="group transition-all duration-200 hover:bg-bg-cream/80"
+                      className="group transition-all duration-150 hover:bg-bg-cream/60"
                       style={{
                         opacity: 0,
-                        animation: `fade-in-up 0.3s ease-out ${i * 40}ms forwards`,
+                        animation: `fade-in-up 0.25s ease-out ${i * 30}ms forwards`,
                       }}
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-4 md:px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
                             {booking.nama.charAt(0).toUpperCase()}
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <button
                               onClick={() => setDetailBooking(booking)}
-                              className="font-medium text-foreground text-sm hover:text-primary transition-colors text-left"
+                              className="font-medium text-foreground text-sm hover:text-primary transition-colors text-left truncate block max-w-[140px] sm:max-w-none"
                             >
                               {booking.nama}
                             </button>
-                            <p className="text-xs text-foreground-light mt-0.5">{booking.wa}</p>
+                            <p className="text-xs text-foreground mt-0.5">{booking.wa}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 hidden md:table-cell">
+                      <td className="px-4 md:px-5 py-3.5 hidden md:table-cell">
                         <span className="inline-flex px-2.5 py-1 rounded-lg text-xs font-medium bg-primary/8 text-primary border border-primary/10">
                           {booking.kamar}
                         </span>
                       </td>
-                      <td className="px-5 py-4 hidden lg:table-cell">
+                      <td className="px-4 md:px-5 py-3.5 hidden lg:table-cell">
                         <div className="text-sm text-foreground">
                           <span>{booking.checkIn}</span>
-                          <span className="text-foreground-light mx-1.5">&rarr;</span>
+                          <span className="text-foreground-light mx-1">&rarr;</span>
                           <span>{booking.checkOut}</span>
                         </div>
-                        <p className="text-xs text-foreground-light mt-0.5">{booking.tamu} tamu</p>
+                        <p className="text-xs text-foreground mt-0.5">{booking.tamu} tamu</p>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-4 md:px-5 py-3.5">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border ${st.bg} ${st.text}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
                           {st.label}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-4 md:px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1">
                           {booking.status === "pending" && (
                             <>
@@ -201,7 +201,7 @@ export default function AdminBookings() {
                           )}
                           <button
                             onClick={() => setDetailBooking(booking)}
-                            className="w-8 h-8 rounded-xl bg-bg-cream text-foreground-muted hover:text-primary hover:bg-primary/5 border border-border transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center text-sm"
+                            className="w-8 h-8 rounded-xl bg-bg-cream text-primary hover:text-primary hover:bg-primary/5 border border-border/70 transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
                             title="Detail"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,9 +238,9 @@ export default function AdminBookings() {
           <div
             className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
-            style={{ animation: "fade-in-up 0.3s ease-out" }}
+            style={{ animation: "fade-in-up 0.25s ease-out" }}
           >
-            <div className="px-6 py-5 border-b border-border flex items-center justify-between">
+            <div className="px-5 md:px-6 py-4 border-b border-border/50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,14 +249,14 @@ export default function AdminBookings() {
                 </div>
                 <div>
                   <h3 className="font-bold text-foreground">Detail Booking</h3>
-                  <p className="text-xs text-foreground-light">ID: {detailBooking.id}</p>
+                  <p className="text-xs text-foreground">ID: {detailBooking.id}</p>
                 </div>
               </div>
-              <button onClick={() => setDetailBooking(null)} className="w-8 h-8 rounded-xl bg-bg-cream text-foreground-muted hover:text-foreground flex items-center justify-center transition-all text-sm hover:scale-105">✕</button>
+              <button onClick={() => setDetailBooking(null)} className="w-8 h-8 rounded-xl bg-bg-cream text-foreground hover:text-foreground flex items-center justify-center transition-all text-sm hover:scale-105 active:scale-95">✕</button>
             </div>
 
-            <div className="p-6 space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-5 md:p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
                 <DetailField label="Nama" value={detailBooking.nama} />
                 <DetailField label="WhatsApp" value={detailBooking.wa} />
                 <DetailField label="Kamar" value={detailBooking.kamar} />
@@ -269,18 +269,18 @@ export default function AdminBookings() {
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-border flex gap-3 justify-end">
+            <div className="px-5 md:px-6 py-4 border-t border-border/50 flex gap-2 justify-end">
               {detailBooking.status === "pending" && (
                 <>
-                  <button onClick={() => { handleUpdateStatus(detailBooking.id, "approved"); setDetailBooking(null); }} className="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-sm font-medium hover:bg-emerald-100 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
+                  <button onClick={() => { handleUpdateStatus(detailBooking.id, "approved"); setDetailBooking(null); }} className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-sm font-medium hover:bg-emerald-100 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
                     <span>✓</span> Terima
                   </button>
-                  <button onClick={() => { handleUpdateStatus(detailBooking.id, "rejected"); setDetailBooking(null); }} className="px-5 py-2.5 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-medium hover:bg-red-100 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
+                  <button onClick={() => { handleUpdateStatus(detailBooking.id, "rejected"); setDetailBooking(null); }} className="px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-medium hover:bg-red-100 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
                     <span>✗</span> Tolak
                   </button>
                 </>
               )}
-              <button onClick={() => { handleDelete(detailBooking.id); }} className="px-5 py-2.5 text-foreground-muted border border-border rounded-xl text-sm font-medium hover:text-red-600 hover:border-red-200 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
+              <button onClick={() => { handleDelete(detailBooking.id); }} className="px-4 py-2 text-foreground border border-border/70 rounded-xl text-sm font-medium hover:text-red-600 hover:border-red-200 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -296,9 +296,9 @@ export default function AdminBookings() {
 
 function DetailField({ label, value }: { label: string; value: string }) {
   return (
-    <div className="p-3 rounded-xl bg-bg-cream/50 border border-border/50">
+    <div className="p-3 rounded-xl bg-bg-cream border border-border/60">
       <p className="text-[11px] text-foreground-muted font-medium uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-sm font-medium text-foreground">{value}</p>
+      <p className="text-sm font-semibold text-foreground">{value}</p>
     </div>
   );
 }
