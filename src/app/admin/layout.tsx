@@ -54,9 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       `}>
         <div className="p-6 border-b border-white/8">
           <Link href="/admin/dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-primary flex items-center justify-center shadow-lg shadow-emerald-900/30 transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-400/20">
-              <span className="text-white font-bold text-sm">FH</span>
-            </div>
+            <img src="/logo-fh.svg" alt="Forest Haven" className="w-9 h-9 rounded-xl shadow-lg shadow-emerald-900/30 transition-all duration-300 group-hover:scale-105" />
             <div>
               <span className="font-bold text-white text-base tracking-tight">Forest Haven</span>
               <span className="text-[10px] text-emerald-300/60 block tracking-widest uppercase">Admin Panel</span>

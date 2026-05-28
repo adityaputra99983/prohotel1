@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60">
+  <defs>
+    <linearGradient id="bg-grad-h" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d5a27"/>
+      <stop offset="100%" stop-color="#1a3a15"/>
+    </linearGradient>
+    <linearGradient id="fh-grad-h" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#c8dfc3"/>
+    </linearGradient>
+    <linearGradient id="shine-h" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.15)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="52" height="52" rx="14" fill="url(#bg-grad-h)"/>
+  <rect x="4" y="4" width="52" height="52" rx="14" fill="url(#shine-h)"/>
+  <text x="30" y="39" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="800" fill="url(#fh-grad-h)" text-anchor="middle" letter-spacing="-1">FH</text>
+  <text x="74" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#0f1b16" text-anchor="start" letter-spacing="-0.3">Forest Haven</text>
+  <text x="74" y="46" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="500" fill="#6b7e6b" text-anchor="start" letter-spacing="3">LUXURY FOREST RESORT</text>
+</svg>

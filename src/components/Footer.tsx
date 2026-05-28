@@ -50,13 +50,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <div className="md:col-span-5">
             <div className="flex items-center gap-4 mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-xl">
-                <span className="text-white text-xl font-bold">FH</span>
-              </div>
-              <div className="space-y-0.5">
-                <span className="text-xl font-bold text-white tracking-tight block">Forest Haven</span>
-                <span className="text-xs text-white/50 tracking-[0.2em] uppercase block">Luxury Forest Resort</span>
-              </div>
+              <img src="/logo-fh-horizontal-white.svg" alt="Forest Haven" className="h-14 w-auto" />
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-md mb-6">
               Pengalaman menginap eksklusif di tengah keindahan hutan riwi. Kami menyajikan

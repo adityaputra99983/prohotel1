@@ -35,23 +35,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:shadow-primary/30 group-hover:scale-105">
-              <span className="text-white text-lg font-bold tracking-tight">FH</span>
-            </div>
-            <div className="transition-all duration-500">
-              <span
-                className="text-xl font-bold tracking-tight transition-colors duration-500 block leading-tight"
-                style={{ color: scrolled ? "var(--foreground)" : "white" }}
-              >
-                Forest Haven
-              </span>
-              <span
-                className="text-xs tracking-[0.2em] uppercase transition-colors duration-500 block"
-                style={{ color: scrolled ? "var(--foreground-muted)" : "rgba(255,255,255,0.6)" }}
-              >
-                Luxury Forest Resort
-              </span>
-            </div>
+            <img src={scrolled ? "/logo-fh-horizontal.svg" : "/logo-fh-horizontal-white.svg"} alt="Forest Haven" className="h-10 w-auto transition-all duration-500 group-hover:scale-105" />
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
